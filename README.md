@@ -1,122 +1,122 @@
-#How to choose the best LLM for your work?
+# How to Choose the Best LLM for Your Work
 
-Various LLM providers various techniques so not al the llms be he samesome are good at something but bad at abnotherthing so you need to know what is best suited for your application right?
+Not all LLMs are the same. Each provider uses different techniques, meaning some models excel at certain tasks but may fall short on others. To get the best results, you need to identify which LLM is best suited for your specific application.
 
-So this is aboput evaluation of LLMs for your specific use case.So I would like to bring it up on levels of evaluation 
+This guide focuses on evaluating LLMs themselves—not the entire application. While there are many ways to make a full system reliable (discussed in a later section), here we concentrate on **choosing the LLM that fits your needs**, essentially the brain of your system.
 
 ## Level 1 - Open Benchmark Usage
 
-- Use public benchmarks selectively, prioritizing those that match our needs  
-- Since models are often exposed to these benchmarks during training; their performance may not reflect true generalization, but we may use these for initial filtering.
+- Use public benchmarks selectively, prioritizing those that match your needs.  
+- Keep in mind: models are often exposed to these benchmarks during training, so performance may not reflect true generalization. Still, they are useful for **initial filtering**.
+<img src="images/l1_1.png" alt="LLM Benchmark" width="500">
+<img src="images/l1_2.png" alt="LLM Benchmark" width="500">
 
-Models on public leaderboards like Hugging Face can be directly compared by adjusting evaluation settings.  
-For quantized versions, test results may be available in associated repositories or result tables.  
-If high-priority benchmark results aren't available or seem unreliable, or if further adjustments are needed to best fit our use case, local evaluations can be done using the available test data and evaluation methods to get results.  
+Models on public leaderboards, like Hugging Face, can be compared directly by adjusting evaluation settings. For quantized versions, test results may be available in associated repositories or result tables.  
+If high-priority benchmark results are unavailable or unreliable, or if further adjustments are needed for your use case, **local evaluations** can be performed using available test data and methods.  
 
-For example, Think instruction-following is an important capability for your use case, using evaluation through benchmarks that focus on it could help ensure the model's performance remains within an acceptable performance range.  
+<img src="images/l1_3" alt="LLM Benchmark" width="500">
 
-**EX:**  
-IFEval Benchmark (Instruction-Following Evaluation)  
-Capability of Large Language Models (LLMs) is to follow natural language instructions.  
-A set of verifiable instructions (25 types - constructed around 500 prompts)  
+> **Example:**  
+> Instruction-following is important for your use case. Using benchmarks focused on this can help ensure the model meets your performance expectations.  
 
-**ex:**  
-- Write in more than 400 words  
-- Your entire output should be in JSON format  
-- Write a list of the top 10 facts about the UK without using commas.  
+**Benchmark Example:**  
+- **IFEval Benchmark (Instruction-Following Evaluation)**  
+- Evaluates the LLM’s ability to follow natural language instructions.  
+- Includes 25 instruction types with ~500 prompts, such as:  
+  - Write more than 400 words  
+  - Output entirely in JSON format  
+  - List the top 10 facts about the UK without using commas  
 
-Implement a relatively robust verification approach by considering commonly seen variations.  
+A robust verification approach should account for common variations in responses.
 
-**Evaluation**  
-- `is_followed(resp, inst);` programmatic – rule-based logic.  
-- `is_followedloose(resp, inst) = Any is_followed transformt(resp), inst fort = 1, 2, …` also Programmatic but transform the response to avoid false negatives.  
+**Evaluation Methods:**  
+- `is_followed(resp, inst);` → Programmatic, rule-based logic  
+- `is_followedloose(resp, inst) = Any is_followed(transform(resp), inst)` → Programmatic with response transformation to avoid false negatives  
 
 **Results:**  
+Based on the benchmark, you can further improve evaluation by developing a **custom test set** tailored to your specific LLM and system requirements.
 
-For further improvement based on the existing test data from a selected benchmark set, we can develop a specialized set of tests for our local LLM models, tailored to our specific system requirements.
-
----
 
 ## Level 2 - Internal Tests
 
-- Some domain-specific simple tests can be done on selected models to check whether the model actually performs well as they claimed.
-- Benchmark values may not be sufficient without manual validation.  
-- This should be a general but impactful set of tests.  
-- It can be a small number of cases that we could create using another LLM or human, which would act as a base QA for any model we choose where the Q are most frequence questions type.  
-- Evaluations can be done through an LLM or using a predefined set of answers.
+- Perform domain-specific tests on selected models to verify claimed capabilities.  
+- Benchmark results alone may not be sufficient; manual validation can be crucial.  
+- Focus on a **small but impactful set of tests**, covering frequent question types relevant to your use case.  
+- Test cases can be created by humans or another reliable LLM, acting as a baseline QA for any model.  
+- Evaluations can be done via an LLM or compared against a predefined set of answers.  
 
-**Example:**  
+**Example Tests:**  
 
-| Test | Evaluation method |
+| Test | Evaluation Method |
 |------|-----------------|
-| Generate C++ Code for given task | Reliable LLM*/ programmatic / human |
-| Extract some hidden ideas bound up with the full functional context window. | programmatic/human |
+| Generate C++ code for a given task | Reliable LLM / programmatic / human |
+| Extract hidden ideas within a functional context window | Programmatic / human |
 
-- All selected tasks have to be done on incremental hard versions.  
+**Additional Guidelines:**  
+- Incrementally increase task difficulty to test model robustness.  
 - Assign computationally intensive tasks to assess performance under load  
-  **EX:** Text to SQL converter  
-- Measure understandability and evaluate how well instructions are followed.  
-- Evaluate through generated results.
+  - **Example:** Text-to-SQL conversion  
+- Measure **instruction-following and understandability**.  
+- Evaluate performance based on the quality and correctness of generated results.
 
----
 
 ## Level 3 - Application-Specified
 
-Think of an application of Score cvs based on a job application
+Consider an application such as scoring CVs for a job opening.
+
 ### Level 3.1 - Tests Through a Reliable LLM
 
-- Determine typical scenarios that significantly affect agent behavior.  
-- Models should never hallucinate when provided with the correct prompt.  
-- Including information from the model's own memory into the context will negatively impact the score and should be avoided.
+- Identify scenarios that significantly affect model behavior.  
+- Models should **not hallucinate** when given correct prompts.  
+- Including information from the model's own memory in context can negatively impact scoring and should be avoided.
 
-**Test cases to cover up those**
+**Test Cases and Methods:**  
 
-**Method - 1**  
-- A set of 10 CVs can be used for the evaluation based on given JD.  
-- The evaluation results and the prompt used to evaluate the local LLM can be submitted to a reliable LLM.  
-- This reliable LLM would have predefined guidelines and rules to identify issues such as hallucinations.  
-- This reliable LLM* can then identify key issues with the results, such as hallucinations.
+**Method 1:**  
+- Use a set of 10 CVs for evaluation based on the job description (JD).  
+- Submit the evaluation results and prompts to a **reliable LLM** with predefined guidelines to identify issues like hallucinations.  
+<img src="images/l311.png" alt="LLM on premise" width="500">
 
-**Method - 2**  
-- Compare reasons from several LLMs for the same scenario to evaluate internal thinking criteria.  
-- Consider missed and gained points during scoring when evaluating an LLM.  
-- Involve humans in the scoring process for better evaluation.
+**Method 2:**  
+- Compare reasoning from multiple LLMs for the same scenario.  
+- Evaluate missed and gained points in scoring.  
+- Include human review for better accuracy.  
+<img src="images/l312.png" alt=" human review" width="500">
 
-**Method - 3**  
-- Prepare typical interview questions to interview LLMs.  
-- Consider key areas for evaluating requirement fulfillment and necessary information for candidate selection.  
-- Check for biases in the LLM's output.  
-- Send generated results and queries to a Reliable LLM for performance feedback, simulating an interview scenario.
+**Method 3:**  
+- Prepare typical interview questions to “interview” LLMs.  
+- Evaluate requirement fulfillment, necessary candidate information, and detect biases.  
+- Submit generated responses and queries to a reliable LLM for performance feedback.
 
 ---
 
-### Level 3.2 -  Arena Mode Evaluations
+### Level 3.2 - Arena Mode Evaluations
 
-- To identify the most reliable model, we can use human-in-the-loop evaluations.  
-- Two unknown models generate outputs for the same set of CVs.  
-- Domain-specific human evaluators then review the outputs and select the ones that best align with the given requirements.  
-- Since the evaluators are qualified in the relevant field, assume their judgments reflect true output quality.  
+- Use **human-in-the-loop** evaluations to identify the most reliable model.  
+- Two unknown models generate outputs for the same CV set.  
+- Domain-specific human evaluators review outputs and select those best aligned with requirements.  
+- Evaluators’ judgments are assumed to reflect true output quality.  
 
-- This evaluation process can be directly used within the open source applications by allowing users to give thumbs up or down for each model’s output.  
-- These interactions are used to compute Elo scores for the models, helping determine which performs better over time.  
-- This approach can be applied during the early implementation phase of an agent system to identify the most suitable model based on actual user feedback and domain-specific evaluation.
+**Application:**  
+- Open-source systems can let users rate outputs (thumbs up/down).  
+- Ratings compute Elo scores to determine model performance over time.  
+- Useful during early implementation to identify the most suitable model based on actual feedback.
 
 ---
 
 ### Level 3.3 - Utilizing a Predefined Dataset
 
-- If we can use real-world application data and results:  
-  - A collection of CVs is submitted for a job opening.  
-  - The hiring process produces a shortlist of CVs (ground truth).  
-  - The model then generates its own shortlist of CVs.  
+- Use real-world application data and results:  
+  - Submit a collection of CVs for a job opening.  
+  - The hiring process produces a shortlist (ground truth).  
+  - The model generates its own shortlist.  
 
-- We compare how well the model's shortlisted candidates align with the actual ones.  
-- If the model correctly identifies at least x% of the shortlisted candidates, its performance can be considered highly reliable.  
-- For the mismatched cases, analysis can reveal whether the model failed or, interestingly, whether the model selected better candidates than the human process — showing cases where the model may outperform human evaluation.
+- Compare model-generated shortlist with the actual one.  
+- If the model correctly identifies at least **x%** of shortlisted candidates, it is considered highly reliable.  
+- Analyze mismatches to determine whether the model failed or potentially outperformed humans in candidate selection.
 
----
 
-## Benchmarks
+## Benchmarks References
 
 - **HellaSwag – Evaluate common sense**  
   Focus: Common sense reasoning  
@@ -174,17 +174,3 @@ Think of an application of Score cvs based on a job application
   Tests: Expert-reviewed multiple-choice questions in fields like: Medicine and healthcare, Law and ethics, Engineering, Mathematics  
   [PDF](https://www.researchgate.net/publication/381152925_MMLU-Pro_A_More_Robust_and_Challenging_Multi-Task_Language_Understanding_Benchmark)  
 
-**Quick summary of IFEval benchmark paper**  
-- IFEval (Instruction Following Evaluation) – Format alignment  
-- Capability of Large Language Models (LLMs) is to follow natural language instructions  
-- Set of verifiable instructions (25 types - constructed around 500 prompts)  
-- Write in more than 400 words  
-- Your entire output should be in JSON output  
-
-**Following shows the type of verifications used within this benchmark:**  
-- Implement a relatively robust verification approach by considering commonly seen variations.  
-- **Evaluation**  
-  - `is_followed(resp, inst)` -> programmatic – rule-based logic.  
-  - `is_followedloose(resp, inst) = Any is_followed transformt(resp), inst fort = 1, 2, …` also Programmatic but transform the response to avoid false negatives.  
-
-**Example results:**
