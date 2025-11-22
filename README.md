@@ -1,4 +1,8 @@
-# LLM Model Evaluation
+#How to choose the best LLM for your work?
+
+Various LLM providers various techniques so not al the llms be he samesome are good at something but bad at abnotherthing so you need to know what is best suited for your application right?
+
+So this is aboput evaluation of LLMs for your specific use case.So I would like to bring it up on levels of evaluation 
 
 ## Level 1 - Open Benchmark Usage
 
@@ -9,7 +13,7 @@ Models on public leaderboards like Hugging Face can be directly compared by adju
 For quantized versions, test results may be available in associated repositories or result tables.  
 If high-priority benchmark results aren't available or seem unreliable, or if further adjustments are needed to best fit our use case, local evaluations can be done using the available test data and evaluation methods to get results.  
 
-For example, since instruction-following is an important capability, using evaluation through benchmarks that focus on it could help ensure the model's performance remains within an acceptable performance range.  
+For example, Think instruction-following is an important capability for your use case, using evaluation through benchmarks that focus on it could help ensure the model's performance remains within an acceptable performance range.  
 
 **EX:**  
 IFEval Benchmark (Instruction-Following Evaluation)  
@@ -35,10 +39,10 @@ For further improvement based on the existing test data from a selected benchmar
 
 ## Level 2 - Internal Tests
 
-- Some domain-specific simple tests can be done on selected models to check whether the model actually performs well.  
+- Some domain-specific simple tests can be done on selected models to check whether the model actually performs well as they claimed.
 - Benchmark values may not be sufficient without manual validation.  
 - This should be a general but impactful set of tests.  
-- It can be a small number of cases that we could create using another LLM or human, which would act as a base QA for any model we choose.  
+- It can be a small number of cases that we could create using another LLM or human, which would act as a base QA for any model we choose where the Q are most frequence questions type.  
 - Evaluations can be done through an LLM or using a predefined set of answers.
 
 **Example:**  
@@ -58,9 +62,9 @@ For further improvement based on the existing test data from a selected benchmar
 
 ## Level 3 - Application-Specified
 
+Think of an application of Score cvs based on a job application
 ### Level 3.1 - Tests Through a Reliable LLM
 
-- Example is about the HR agent  
 - Determine typical scenarios that significantly affect agent behavior.  
 - Models should never hallucinate when provided with the correct prompt.  
 - Including information from the model's own memory into the context will negatively impact the score and should be avoided.
@@ -68,7 +72,7 @@ For further improvement based on the existing test data from a selected benchmar
 **Test cases to cover up those**
 
 **Method - 1**  
-- A set of 10 CVs can be used for the evaluation based on given requirements.  
+- A set of 10 CVs can be used for the evaluation based on given JD.  
 - The evaluation results and the prompt used to evaluate the local LLM can be submitted to a reliable LLM.  
 - This reliable LLM would have predefined guidelines and rules to identify issues such as hallucinations.  
 - This reliable LLM* can then identify key issues with the results, such as hallucinations.
@@ -86,14 +90,14 @@ For further improvement based on the existing test data from a selected benchmar
 
 ---
 
-### Level 3.2 - OWUI Arena Mode Evaluations
+### Level 3.2 -  Arena Mode Evaluations
 
-- To identify the most reliable model, we can use human-in-the-loop evaluation within OWUI.  
+- To identify the most reliable model, we can use human-in-the-loop evaluations.  
 - Two unknown models generate outputs for the same set of CVs.  
 - Domain-specific human evaluators then review the outputs and select the ones that best align with the given requirements.  
-- Since the evaluators are qualified in the relevant field, their judgments reflect true output quality.  
+- Since the evaluators are qualified in the relevant field, assume their judgments reflect true output quality.  
 
-- This evaluation process can be directly used within the OpenWebUI application by allowing users to give thumbs up or down for each model’s output.  
+- This evaluation process can be directly used within the open source applications by allowing users to give thumbs up or down for each model’s output.  
 - These interactions are used to compute Elo scores for the models, helping determine which performs better over time.  
 - This approach can be applied during the early implementation phase of an agent system to identify the most suitable model based on actual user feedback and domain-specific evaluation.
 
@@ -107,7 +111,7 @@ For further improvement based on the existing test data from a selected benchmar
   - The model then generates its own shortlist of CVs.  
 
 - We compare how well the model's shortlisted candidates align with the actual ones.  
-- If the model correctly identifies at least 80% of the shortlisted candidates, its performance can be considered highly reliable.  
+- If the model correctly identifies at least x% of the shortlisted candidates, its performance can be considered highly reliable.  
 - For the mismatched cases, analysis can reveal whether the model failed or, interestingly, whether the model selected better candidates than the human process — showing cases where the model may outperform human evaluation.
 
 ---
